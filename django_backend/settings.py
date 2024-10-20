@@ -23,15 +23,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#6h@h^@11g(nh-n!!v07u(pqu4er5u!_evs@6bf@eaq*t@#$bd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [
-                '10.0.2.2',
-                '127.0.0.1',
-                'localhost',
-                '114.10.42.137',
-                'testok-344308680547.asia-southeast2.run.app',
-                ]
+if CLOUDRUN_SERVICE_URL:
+    ALLOWED_HOSTS = [urlparse(CLOUDRUN_SERVICE_URL).netloc]
+    CSRF_TRUSTED_ORIGINS = ['https://testok-344308680547.asia-southeast2.run.app']
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+else:
+    ALLOWED_HOSTS = ["*"]
+
+# ALLOWED_HOSTS = [
+#                 '10.0.2.2',
+#                 '127.0.0.1',
+#                 'localhost',
+#                 '114.10.42.137',
+#                 'testok-344308680547.asia-southeast2.run.app',
+#                 ]
 
 
 # Application definition
