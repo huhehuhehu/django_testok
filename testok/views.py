@@ -19,21 +19,21 @@ from PIL import Image
 from io import BytesIO
 import uuid
 
-import firebase_admin
-from firebase_admin import credentials, storage
+# import firebase_admin
+# from firebase_admin import credentials, storage
 
-cred = credentials.Certificate(os.path.join(os.getcwd(), 'serviceAccountKey.json'))
-firebase_admin.initialize_app(cred, {
-    'storageBucket': 'testok-9cd89.appspot.com'
-})
+# cred = credentials.Certificate(os.path.join(os.getcwd(), 'serviceAccountKey.json'))
+# firebase_admin.initialize_app(cred, {
+#     'storageBucket': 'testok-9cd89.appspot.com'
+# })
 
-if not firebase_admin._apps:
-    cred = credentials.Certificate(service_account_path)
-    firebase_admin.initialize_app(cred, {
-        'storageBucket': '<your-firebase-storage-bucket>'
-    })
+# if not firebase_admin._apps:
+#     cred = credentials.Certificate(service_account_path)
+#     firebase_admin.initialize_app(cred, {
+#         'storageBucket': '<your-firebase-storage-bucket>'
+#     })
 
-bucket = storage.bucket()
+# bucket = storage.bucket()
 
 class GetAll(APIView):
     def get(self, request, format=None):
@@ -43,14 +43,14 @@ class GetAll(APIView):
 
 class DeleteAll(APIView):
     def get(self, request, format=None):
-        brands = Brand.objects.all().values_list('name', flat=True)
+        # brands = Brand.objects.all().values_list('name', flat=True)
 
-        try:
-            for b in brands:
-                for blob in bucket.list_blobs(prefix=f'{b}/'):
-                    blob.delete()
-        except:
-            pass
+        # try:
+        #     for b in brands:
+        #         for blob in bucket.list_blobs(prefix=f'{b}/'):
+        #             blob.delete()
+        # except:
+        #     pass
 
         try:
             for m in models_list:
@@ -153,78 +153,78 @@ def insert_product(request):
 
 
 
-@api_view(['POST'])
-def upload_product_image(request):
-    def convert_to_png(image_path, output_path):
-        img = Image.open(image_file)
+# @api_view(['POST'])
+# def upload_product_image(request):
+#     def convert_to_png(image_path, output_path):
+#         img = Image.open(image_file)
     
-        # Convert to 'RGBA' if necessary
-        if img.mode != 'RGBA':
-            img = img.convert('RGBA')
+#         # Convert to 'RGBA' if necessary
+#         if img.mode != 'RGBA':
+#             img = img.convert('RGBA')
         
-        # Create an in-memory file for the PNG
-        buffer = BytesIO()
-        img.save(buffer, format='PNG')
-        buffer.seek(0)
+#         # Create an in-memory file for the PNG
+#         buffer = BytesIO()
+#         img.save(buffer, format='PNG')
+#         buffer.seek(0)
         
-        # Create a new InMemoryUploadedFile with PNG format
-        return InMemoryUploadedFile(buffer, 'ImageField', image_file.name.split('.')[0] + '.png',
-                                    'image/png', buffer.tell(), None)
+#         # Create a new InMemoryUploadedFile with PNG format
+#         return InMemoryUploadedFile(buffer, 'ImageField', image_file.name.split('.')[0] + '.png',
+#                                     'image/png', buffer.tell(), None)
 
 
-    def upload_image_to_firebase(image, filename):
+#     def upload_image_to_firebase(image, filename):
 
 
-        blob = bucket.blob(filename)
+#         blob = bucket.blob(filename)
         
-        blob.upload_from_file(image)
+#         blob.upload_from_file(image)
         
-        blob.make_public()
+#         blob.make_public()
         
-        return blob.public_url
+#         return blob.public_url
 
     
-    try:
-        if 'image' not in request.FILES:
-            return Response({
-                'status': 'error',
-                'message': 'No image file provided'
-            }, status=status.HTTP_400_BAD_REQUEST)
+#     try:
+#         if 'image' not in request.FILES:
+#             return Response({
+#                 'status': 'error',
+#                 'message': 'No image file provided'
+#             }, status=status.HTTP_400_BAD_REQUEST)
 
-        image = request.FILES['image']
+#         image = request.FILES['image']
 
-        product = Product.objects.get(name=request.data['product'])
-        brand = product.brand
+#         product = Product.objects.get(name=request.data['product'])
+#         brand = product.brand
         
-        filename =  f'{uuid.uuid4()}'
-        image_path = f'{brand.name}/{product._id}/{filename}.png'
+#         filename =  f'{uuid.uuid4()}'
+#         image_path = f'{brand.name}/{product._id}/{filename}.png'
         
-        # Upload image to Firebase
-        image_url = upload_image_to_firebase(image, image_path)
+#         # Upload image to Firebase
+#         image_url = upload_image_to_firebase(image, image_path)
         
-        # Save the ProductImage with the Firebase URL
-        data = {
-            'product': product._id,
-            'url': image_url
-        }
-        serializer = ProductImageSerializer(data=data)
+#         # Save the ProductImage with the Firebase URL
+#         data = {
+#             'product': product._id,
+#             'url': image_url
+#         }
+#         serializer = ProductImageSerializer(data=data)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                'status': 'success',
-                'message': 'Image uploaded successfully',
-                'data': serializer.data
-            }, status=status.HTTP_201_CREATED)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response({
+#                 'status': 'success',
+#                 'message': 'Image uploaded successfully',
+#                 'data': serializer.data
+#             }, status=status.HTTP_201_CREATED)
         
-        return Response({
-            'status': 'error',
-            'message': 'Invalid data',
-            'errors': serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+#         return Response({
+#             'status': 'error',
+#             'message': 'Invalid data',
+#             'errors': serializer.errors
+#         }, status=status.HTTP_400_BAD_REQUEST)
 
-    except Exception as e:
-        return Response({
-            'status': 'error',
-            'message': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     except Exception as e:
+#         return Response({
+#             'status': 'error',
+#             'message': str(e)
+#         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
