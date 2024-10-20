@@ -102,7 +102,7 @@ class OrderSummaryView(APIView):
                 serializer = OrderSummarySerializer(order, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            retu
+            return Response({'status': 'error', 'message': 'NO ORDERS'}, status=status.HTTP_400_BAD_REQUEST)
 
 ####################################################################################################################
 

@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#6h@h^@11g(nh-n!!v07u(pqu4er5u!_evs@6bf@eaq*t@#$bd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 CLOUDRUN_SERVICE_URL='https://testok-344308680547.asia-southeast2.run.app'
 if CLOUDRUN_SERVICE_URL:
@@ -101,7 +101,8 @@ WSGI_APPLICATION = 'django_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': '34.128.84.123',
+        # 'HOST': '34.128.84.123',
+        'HOST': '/cloudsql/testok-9cd89:asia-southeast2:testok-123570',
         'USER': 'huhehu',
         'PASSWORD': 'magnetman',
         'NAME': 'testok',
