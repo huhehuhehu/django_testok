@@ -25,6 +25,7 @@ SECRET_KEY = 'django-insecure-#6h@h^@11g(nh-n!!v07u(pqu4er5u!_evs@6bf@eaq*t@#$bd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+CLOUDRUN_SERVICE_URL='https://testok-344308680547.asia-southeast2.run.app'
 if CLOUDRUN_SERVICE_URL:
     ALLOWED_HOSTS = [urlparse(CLOUDRUN_SERVICE_URL).netloc]
     CSRF_TRUSTED_ORIGINS = ['https://testok-344308680547.asia-southeast2.run.app']
