@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
                 '127.0.0.1',
                 'localhost',
                 '114.10.42.137',
+                'testok-344308680547.asia-southeast2.run.app',
                 ]
 
 
